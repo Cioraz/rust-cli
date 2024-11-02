@@ -5,7 +5,7 @@ const DEFAULT_COLOR: &str = "bright_white";
 
 #[derive(Args, Debug, Clone)]
 pub struct EchoArgs {
-    #[arg(short, long)]
+    #[arg(index = 1)]
     message: String,
     #[arg(short, long)]
     count: Option<u32>,

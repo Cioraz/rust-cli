@@ -3,8 +3,10 @@ use std::{fs::File, io::BufRead, io::BufReader};
 
 #[derive(Args, Debug, Clone)]
 pub struct CatArgs {
-    #[arg(short, long)]
+    #[arg(index = 1)]
     filename: Option<String>,
+    #[arg(short, long)]
+    lineflag: bool,
 }
 
 pub fn execute(cat_args: CatArgs) {
@@ -19,9 +21,16 @@ pub fn execute(cat_args: CatArgs) {
     });
 
     let reader = BufReader::new(file);
-    for line in reader.lines() {
+
+    for (index, line) in reader.lines().enumerate() {
         match line {
-            Ok(content) => println!("{}", content),
+            Ok(content) => {
+                if cat_args.lineflag {
+                    println!("{}: {}", index + 1, content);
+                } else {
+                    println!("{}", content);
+                }
+            }
             Err(error) => eprintln!("ERROR: Something went wrong: {}", error),
         }
     }
