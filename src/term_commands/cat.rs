@@ -16,12 +16,17 @@ pub struct CatArgs {
 
 pub fn execute(cat_args: CatArgs) {
     let file_name = cat_args.filename.unwrap_or_else(|| {
-        eprintln!("ERROR: No filename provided!");
+        eprintln!("{}: No filename provided!", String::from("ERROR").red());
         std::process::exit(1);
     });
 
     let file = File::open(&file_name).unwrap_or_else(|error| {
-        eprintln!("ERROR: Error opening file {}, {}", file_name, error);
+        eprintln!(
+            "{}: Error opening file {}, {}",
+            String::from("ERROR").red(),
+            file_name,
+            error
+        );
         std::process::exit(1);
     });
 
@@ -29,7 +34,7 @@ pub fn execute(cat_args: CatArgs) {
 
     let ps = SyntaxSet::load_defaults_newlines();
     let ts = ThemeSet::load_defaults();
-    let theme = &ts.themes["base16-ocean.dark"];
+    let theme = &ts.themes["Solarized (dark)"];
 
     let extension = file_name.split('.').last().unwrap_or("");
     let syntax = ps
@@ -40,7 +45,11 @@ pub fn execute(cat_args: CatArgs) {
 
     for (index, line) in reader.lines().enumerate() {
         let line = line.unwrap_or_else(|error| {
-            eprintln!("ERROR: Unable to read line {}", error);
+            eprintln!(
+                "{}: Unable to read line {}",
+                String::from("ERROR").red(),
+                error
+            );
             String::new()
         });
         let ranges: Vec<(Style, &str)> = highlighter.highlight_line(&line, &ps).unwrap();
